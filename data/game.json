@@ -1,0 +1,9 @@
+{
+  "$schema": "https://github.com/ManualForArchipelago/Manual/raw/main/schemas/Manual.game.schema.json",
+  "game": "KTaNE Centurion",
+  "creator": "Awesome7285",
+  "filler_item_name": "+1 Millisecond",
+  "starting_items": [
+    
+  ]
+}
