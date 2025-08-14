@@ -46,7 +46,7 @@ def after_create_regions(world: World, multiworld: MultiWorld, player: int):
     locationNamesToRemove: list[str] = [] # List of location names
 
     # Remove TTK Check
-    if (world.options.enable_ttk_check.value):
+    if (not world.options.enable_ttk_check.value):
         locationNamesToRemove.append("Turn the Key Solved")
 
     # Add your code here to calculate which locations to remove
