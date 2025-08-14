@@ -48,6 +48,10 @@ def after_create_regions(world: World, multiworld: MultiWorld, player: int):
     # Remove TTK Check
     if (not world.options.enable_ttk_check.value):
         locationNamesToRemove.append("Turn the Key Solved")
+    
+    # Remove 3rd Vanilla
+    if (not world.options.enable_3rd_vanilla.value):
+        locationNamesToRemove.append("Vanilla 3 Solved")
 
     # Add your code here to calculate which locations to remove
 

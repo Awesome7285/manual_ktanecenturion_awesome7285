@@ -96,6 +96,7 @@
 
     { "name": "Vanilla 1 Solved", "requires": "", "category": ["Regular Module"] },
     { "name": "Vanilla 2 Solved", "requires": "", "category": ["Regular Module"] },
+    { "name": "Vanilla 3 Solved", "requires": "", "category": ["Regular Module"] },
     
     { "name": "Turn the Key Solved", "requires": "", "category": ["Regular Module"] },
 

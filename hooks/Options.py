@@ -41,11 +41,17 @@ class EnableTTKCheck(Toggle):
     """Adds a check for solving Turn the Key."""
     default = False
 
+class Enable3Vanillas(Toggle):
+    """Adds a check for a third vanilla module.
+    This option should be enabled if playing the No-Needy Centurion, otherwise turn it off."""
+    default = True
+
 # This is called before any manual options are defined, in case you want to define your own with a clean slate or let Manual define over them
 def before_options_defined(options: dict[str, Type[Option[Any]]]) -> dict[str, Type[Option[Any]]]:
     options["number_of_starting_modules"] = NumberOfStartingModules
     options["start_with_ttks_modules"] = StartWithTTKsModules
     options["enable_ttk_check"] = EnableTTKCheck
+    options["enable_3rd_vanilla"] = Enable3Vanillas
     return options
 
 # This is called after any manual options are defined, in case you want to see what options are defined or want to modify the defined options
