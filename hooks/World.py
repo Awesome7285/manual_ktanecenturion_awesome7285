@@ -45,13 +45,52 @@ def after_create_regions(world: World, multiworld: MultiWorld, player: int):
     # Use this hook to remove locations from the world
     locationNamesToRemove: list[str] = [] # List of location names
 
+    # Bomb Type
+    match world.options.bomb_mission.value:
+        case 0: # Centurion
+            packs_to_remove = ["Praetorian Module", "OWAE Module"]
+            for category in packs_to_remove:
+                locationNamesToRemove.extend([
+                    name for name, l in world.location_name_to_location.items()
+                        if category in l.get('category', [])
+                ])
+
+        case 1: # Praetorian
+            locationNamesToRemove.extend([
+                name for name, l in world.location_name_to_location.items()
+                    if "OWAE Module" in l.get('category', [])
+            ])
+            locationNamesToRemove.append("Vanilla 1 Solved")
+            locationNamesToRemove.append("Vanilla 2 Solved")
+            locationNamesToRemove.append("Vanilla 3 Solved")
+
+        case 2: # OWAE
+            locationNamesToRemove.append("Vanilla 1 Solved")
+            locationNamesToRemove.append("Vanilla 2 Solved")
+            locationNamesToRemove.append("Vanilla 3 Solved")
+
     # Remove TTK Check
     if (not world.options.enable_ttk_check.value):
         locationNamesToRemove.append("Turn the Key Solved")
-    
+
     # Remove 3rd Vanilla
     if (not world.options.enable_3rd_vanilla.value):
         locationNamesToRemove.append("Vanilla 3 Solved")
+
+    # Remove Swan Check
+    if (not world.options.enable_swan_check.value):
+        locationNamesToRemove.append("The Swan Solved")
+    
+    # Remove Forget Everything
+    if (not world.options.enable_fe_check.value):
+        locationNamesToRemove.append("Forget Everything Solved")
+    
+    # Remove Time Keeper
+    if (not world.options.enable_timekeeper_check.value):
+        locationNamesToRemove.append("The Time Keeper Solved")
+
+    # Remove Duplicates
+    locationNamesToRemove = list(set(locationNamesToRemove))
 
     # Add your code here to calculate which locations to remove
 
@@ -89,10 +128,49 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
     # Starting Modules
     no_starting_modules = world.options.number_of_starting_modules.value
 
+    # Bomb Type
+    match world.options.bomb_mission.value:
+        case 0: # Centurion
+            if world.options.start_with_ttks_modules.value == True:
+                no_starting_modules = 6
+            packs_to_remove = ["Praetorian Module", "OWAE Module"]
+            for category in packs_to_remove:
+                itemNamesToRemove.extend([
+                    name for name, l in world.item_name_to_item.items()
+                        if category in l.get('category', [])
+                ])
+
+        case 1: # Praetorian
+            if world.options.start_with_ttks_modules.value == True:
+                no_starting_modules = 12
+            packs_to_remove = ["OWAE Module"]
+            for category in packs_to_remove:
+                itemNamesToRemove.extend([
+                    name for name, l in world.item_name_to_item.items()
+                        if category in l.get('category', [])
+                ])
+
+        case 2: # OWAE
+            if world.options.start_with_ttks_modules.value == True:
+                no_starting_modules = 12
+            
+            # Remove Time Keeper
+            if world.options.enable_timekeeper_check.value == False:
+                itemNamesToRemove.append("The Time Keeper")
+            
+            # Start with Tax Returns
+            if world.options.start_with_tax_returns.value == True:
+                tax = [i for i in item_pool if i.name == "Tax Returns"][0]
+                multiworld.push_precollected(tax)
+                item_pool.remove(tax)
+
+    for itemName in itemNamesToRemove:
+        item = next(i for i in item_pool if i.name == itemName)
+        item_pool.remove(item)
+
     # TTKs Option
     if world.options.start_with_ttks_modules.value == True:
         starting_category = "TTKs Modules"
-        no_starting_modules = 6
     else:
         starting_category = "Regular Module"
 
@@ -119,10 +197,6 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
         multiworld.push_precollected(chosen_item)
         possible_items.remove(chosen_item)
         item_pool.remove(chosen_item)
-
-    for itemName in itemNamesToRemove:
-        item = next(i for i in item_pool if i.name == itemName)
-        item_pool.remove(item)
 
     return item_pool
 

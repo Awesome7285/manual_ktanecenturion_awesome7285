@@ -25,33 +25,69 @@ from typing import Type, Any
 # To add an option, use the before_options_defined hook below and something like this:
 #   options["total_characters_to_win_with"] = TotalCharactersToWinWith
 #
+class BombMission(Choice):
+    """Choose which bomb mission you are playing.
+    Centurion: 101 Modules
+    Praetorian: 161 Modules
+    One With Absolutely Everything: 236 Modules"""
+    option_centurion = 0
+    option_praetorian = 1
+    option_owae = 2
+    default = 0
+
 class NumberOfStartingModules(Range):
     """Number of Modules you start with.
     Has no effect if start_with_ttks_modules is enabled."""
     range_start = 0
-    range_end = 10
+    range_end = 15
     default = 6
 
 class StartWithTTKsModules(Toggle):
-    """Adds all 6 pre keys turned modules to the starting inventory instead of random modules.
-    Recommended if playing the standard Centurion with TTKs on the bomb."""
+    """Adds all pre keys-turned modules to the starting inventory instead of random modules.
+    Recommended if playing the standard Centurion/Praetorian with TTKs on the bomb."""
     default = True
 
 class EnableTTKCheck(Toggle):
-    """Adds a check for solving Turn the Key."""
+    """Adds a check for solving Turn the Key.
+    Always in logic."""
     default = False
 
 class Enable3Vanillas(Toggle):
-    """Adds a check for a third vanilla module.
+    """Adds a check for a third vanilla module. (Centurion Only)
     This option should be enabled if playing the No-Needy Centurion, otherwise turn it off."""
+    default = True
+
+class EnableSwanCheck(Toggle):
+    """Adds a check for solving The Swan. (Praetorian and OWAE Only)
+    Only in logic after ~40% of the total module items have been received."""
+    default = True
+
+class EnableForgetEverythingCheck(Toggle):
+    """Adds a check for solving Forget Everything. (OWAE Only)
+    Only in logic after 100 module items have been received."""
+    default = True
+
+class StartWithTaxReturns(Toggle):
+    """Adds Tax Returns to the starting inventory so it can be solved within its 10 minute time limit. (OWAE Only)
+    If disabled, Tax Returns will be shuffled into the item pool (Recommended if playing on zen mode and tanking the strike)."""
+    default = False
+
+class EnableTimeKeeperCheck(Toggle):
+    """Adds a check for solving The Time Keeper. (OWAE Only)
+    Only in logic after receiving the Time Keeper item."""
     default = True
 
 # This is called before any manual options are defined, in case you want to define your own with a clean slate or let Manual define over them
 def before_options_defined(options: dict[str, Type[Option[Any]]]) -> dict[str, Type[Option[Any]]]:
+    options["bomb_mission"] = BombMission
     options["number_of_starting_modules"] = NumberOfStartingModules
     options["start_with_ttks_modules"] = StartWithTTKsModules
     options["enable_ttk_check"] = EnableTTKCheck
     options["enable_3rd_vanilla"] = Enable3Vanillas
+    options["enable_swan_check"] = EnableSwanCheck
+    options["enable_fe_check"] = EnableForgetEverythingCheck
+    options["start_with_tax_returns"] = StartWithTaxReturns
+    options["enable_timekeeper_check"] = EnableTimeKeeperCheck
     return options
 
 # This is called after any manual options are defined, in case you want to see what options are defined or want to modify the defined options
